@@ -1,0 +1,22 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Set up Go
+          command: circleci run circleci/setup-go@0.0.11-94c150b -- install --version 1.26
+      - run:
+          name: Download modules
+          command: circleci run circleci/setup-go@0.0.11-94c150b -- mod-download --checksum '{{ checksum "go.sum" }}'
+      - run:
+          name: Test
+          command: circleci run circleci/setup-go@0.0.11-94c150b -- test --project-path .
+
+workflows:
+  test:
+    jobs:
+      - test
